@@ -1,0 +1,14 @@
+services:
+
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: "${DOCKER_ENV_MODE:-production}"
+    ports:
+      - "${DOCKER_WEB_PORT_FORWARD:-127.0.0.1:8000}:8000"
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-.:/app}"
+    env_file:
+      - .env
+    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
