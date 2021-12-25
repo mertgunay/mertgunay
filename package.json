@@ -1,0 +1,16 @@
+{
+  "name": "mertgunay",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "postcss core/static/core/src/style.css -o core/static/bundle.min.css --watch",
+    "prod": "tailwindcss -i core/static/core/src/style.css -o core/static/core/bundle.min.css --minify"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.5",
+    "tailwindcss": "^3.0.7"
+  }
+}

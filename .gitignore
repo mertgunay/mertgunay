@@ -1,3 +1,6 @@
+# Docker stuff:
+docker-compose.override.yml
+
 # Django stuff:
 myfile.txt
 *.log

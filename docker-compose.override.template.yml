@@ -1,15 +1,15 @@
 services:
 
-  django:
+  tailwind:
     build:
       context: .
-      dockerfile: docker/django/Dockerfile
+      dockerfile: docker/node/Dockerfile
       target: "${DOCKER_ENV_MODE:-production}"
-    command: npm run dev
-    ports:
-      - "3000:3000"
-    volumes:
-      - "${DOCKER_WEB_VOLUME:-.:/app}"
     env_file:
       - .env
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-.:/app}"
+      - /app/node_modules
     restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+    depends_on:
+      - django
