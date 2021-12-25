@@ -4,7 +4,8 @@ services:
     build:
       context: .
       dockerfile: docker/node/Dockerfile
-      target: "${DOCKER_ENV_MODE:-production}"
+    ports:
+      - "3000:3000"
     env_file:
       - .env
     volumes:
