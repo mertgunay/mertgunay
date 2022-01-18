@@ -1,14 +1,60 @@
 services:
 
+  postgres:
+    build:
+      context: .
+      dockerfile: ./docker/postgres/Dockerfile
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    networks:
+      - postgres_network
+
   django:
     build:
       context: .
       dockerfile: docker/django/Dockerfile
-      target: "${DOCKER_ENV_MODE:-production}"
-    ports:
-      - "${DOCKER_WEB_PORT_FORWARD:-127.0.0.1:8000}:8000"
+      args:
+        - "DEBUG=${DEBUG:-false}"
+        - "DOCKER_ENV_MODE=${DOCKER_ENV_MODE:-production}"
+    image: mertgunay_web:0.0.1
+    command: /app/start.sh server
     volumes:
-      - "${DOCKER_WEB_VOLUME:-.:/app}"
+      - "${DOCKER_WEB_VOLUME:-.:/app/src}"
+      - static_data:/app/static
+      - media_data:/app/media
     env_file:
       - .env
     restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+    stop_grace_period: "3s"
+    depends_on:
+      - postgres
+    networks:
+      - postgres_network
+      - nginx_network
+
+  nginx:
+    image: nginx:1.21.5-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - static_data:/app/static
+      - media_data:/app/media
+    depends_on:
+      - django
+    networks:
+      - nginx_network
+    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+
+volumes:
+  pg_data: { }
+  static_data: { }
+  media_data: { }
+
+networks:
+  nginx_network:
+    driver: bridge
+  postgres_network:
+    driver: bridge

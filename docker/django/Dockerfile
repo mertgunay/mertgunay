@@ -1,4 +1,4 @@
-FROM python:3.9-slim as builder
+FROM python:3.9-slim-buster as builder
 
 ENV PYTHONUNBUFFERED 1
 
@@ -7,13 +7,23 @@ RUN apt-get -y update \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.lock.txt app/requirements.lock.txt
+ARG DOCKER_ENV_MODE="production"
+ENV DOCKER_ENV_MODE="${DOCKER_ENV_MODE}"
+
+COPY Pipfile app/Pipfile
+COPY Pipfile.lock app/Pipfile.lock
+
 WORKDIR /app
 
 RUN pip install --upgrade pip && \
-    pip install -r requirements.lock.txt
+    pip install pipenv
 
-FROM python:3.9-slim as base-build
+RUN if [ "${DOCKER_ENV_MODE}" != "development" ] ; then \
+    pipenv install --system --deploy --ignore-pipfile; else \
+    pipenv install --system --deploy --ignore-pipfile --dev; fi
+
+
+FROM python:3.9-slim-buster as base-build
 
 ENV PYTHONUNBUFFERED 1
 LABEL maintainer="mertgunay.com"
@@ -23,20 +33,26 @@ RUN groupadd -r mertgunay && useradd -r -g mertgunay mertgunay
 COPY --from=builder /usr/local/lib/python3.9/site-packages/ /usr/local/lib/python3.9/site-packages/
 COPY --from=builder /usr/local/bin/ /usr/local/bin/
 
-RUN mkdir /app
-WORKDIR /app
+RUN mkdir -p /app/src && \
+    mkdir /app/static && \
+    mkdir /app/media
+
+WORKDIR /app/src
 
 RUN chown -R mertgunay:mertgunay /app
 USER mertgunay
 
-COPY . /app
-WORKDIR /app
+# Copy entrypoint.sh
+COPY docker/django/entrypoint.sh /app/entrypoint.sh
+RUN sed -i 's/\r$//g' /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+COPY docker/django/start.sh /app/start.sh
+RUN sed -i 's/\r//' /app/start.sh
+RUN chmod +x /app/start.sh
+
 EXPOSE 8000
 
-FROM base-build as development
+COPY . .
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-
-FROM base-build as production
-
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "mertgunay.wsgi:application"]
+ENTRYPOINT ["/app/entrypoint.sh"]

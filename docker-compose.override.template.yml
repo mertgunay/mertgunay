@@ -10,7 +10,15 @@ services:
     env_file:
       - .env
     volumes:
-      - "${DOCKER_WEB_VOLUME:-.:/app}"
+      - "${DOCKER_WEB_VOLUME:-.:/app/src}"
     restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
     depends_on:
       - django
+
+  postgres:
+    ports:
+      - "5432:5432"
+
+  nginx:
+    ports:
+      - "8000:80"
