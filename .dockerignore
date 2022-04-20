@@ -13,6 +13,7 @@ app/*/*/*/__pycache__/
 .env/
 .venv/
 venv/
+node_modules/
 
 # Local PostgreSQL data
 data/

@@ -34,19 +34,19 @@ services:
       - postgres_network
       - nginx_network
 
-  nginx:
-    image: nginx:1.21.5-alpine
-    ports:
-      - "80:80"
-    volumes:
-      - ./docker/nginx/conf.d:/etc/nginx/conf.d
-      - static_data:/app/static
-      - media_data:/app/media
-    depends_on:
-      - django
-    networks:
-      - nginx_network
-    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+#  nginx:
+#    image: nginx:1.21.5-alpine
+#    ports:
+#      - "80:80"
+#    volumes:
+#      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+#      - static_data:/app/static
+#      - media_data:/app/media
+#    depends_on:
+#      - django
+#    networks:
+#      - nginx_network
+#    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
 
 volumes:
   pg_data: { }

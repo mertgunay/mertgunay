@@ -1,24 +1,28 @@
 services:
 
-  tailwind:
-    build:
-      context: .
-      dockerfile: docker/node/Dockerfile
-    command: npm run dev
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env
-    volumes:
-      - "${DOCKER_WEB_VOLUME:-.:/app/src}"
-    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
-    depends_on:
-      - django
+#  tailwind:
+#    build:
+#      context: .
+#      dockerfile: docker/node/Dockerfile
+#    command: npm run dev
+#    ports:
+#      - "3000:3000"
+#    env_file:
+#      - .env
+#    volumes:
+#      - "${DOCKER_WEB_VOLUME:-.:/app/src}"
+#    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+#    depends_on:
+#      - django
 
   postgres:
     ports:
       - "5432:5432"
 
-  nginx:
+#  nginx:
+#    ports:
+#      - "8000:80"
+
+  django:
     ports:
-      - "8000:80"
+      - "8000:8000"
