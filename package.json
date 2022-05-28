@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "tailwindcss -i core/static/core/src/style.css -o core/static/bundle.min.css --watch",
-    "prod": "tailwindcss -i core/static/core/src/style.css -o core/static/core/bundle.min.css --minify"
+    "css": "tailwindcss -i core/static/core/src/style.css -o core/static/core/public/bundle.min.css --watch",
+    "css-build": "tailwindcss -i core/static/core/src/style.css -o core/static/core/public/bundle.min.css --minify"
   },
   "author": "",
   "license": "ISC",

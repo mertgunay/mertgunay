@@ -19,7 +19,7 @@ services:
         - "DEBUG=${DEBUG:-false}"
         - "DOCKER_ENV_MODE=${DOCKER_ENV_MODE:-production}"
     image: mertgunay_web:0.0.1
-    command: /app/start.sh server
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - "${DOCKER_WEB_VOLUME:-.:/app/src}"
       - static_data:/app/static
