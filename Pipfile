@@ -11,7 +11,7 @@ pillow = "==9.2.0"
 
 [dev-packages]
 django-debug-toolbar = "==3.6.0"
-autopep8 = "==1.7.0"
+autopep8 = "==2.0.0"
 
 [requires]
 python_version = "3.9"
